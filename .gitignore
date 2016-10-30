@@ -2,8 +2,10 @@
 .vs/
 src.*/Debug/
 src.*/Release/
+src.*/x64/
 
 # Ignored file types
 *.db
 *.opendb
 *.exe
+*.ilk
