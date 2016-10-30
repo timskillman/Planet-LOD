@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include "gui.h"
 ////////////////////////////////////////////////////////////////////////////////
-matrix44d modelviewprojection;
+matrix44 modelviewprojection;
 ////////////////////////////////////////////////////////////////////////////////
 struct WorldTexture
 {
@@ -119,23 +119,23 @@ struct World
 
 		if (!normalize_enabled)
 		{
-			vec4d p1x = modelviewprojection * vec4d(p1.x, p1.y, p1.z, 1.0);
-			vec4d p2x = modelviewprojection * vec4d(p2.x, p2.y, p2.z, 1.0);// -p1x;
-			vec4d p3x = modelviewprojection * vec4d(p3.x, p3.y, p3.z, 1.0);// -p1x;
+			vec4f p1x = modelviewprojection * vec4f(p1.x, p1.y, p1.z, 1.0);
+			vec4f p2x = modelviewprojection * vec4f(p2.x, p2.y, p2.z, 1.0);// -p1x;
+			vec4f p3x = modelviewprojection * vec4f(p3.x, p3.y, p3.z, 1.0);// -p1x;
 
-			vec4d n1x = modelviewprojection * (vec4d(p1.x*0.994, p1.y*0.994, p1.z*0.994, 1.0));
-			vec4d n2x = modelviewprojection * (vec4d(p2.x*0.994, p2.y*0.994, p2.z*0.994, 1.0));
-			vec4d n3x = modelviewprojection * (vec4d(p3.x*0.994, p3.y*0.994, p3.z*0.994, 1.0));
+			vec4f n1x = modelviewprojection * (vec4f(p1.x*0.994, p1.y*0.994, p1.z*0.994, 1.0));
+			vec4f n2x = modelviewprojection * (vec4f(p2.x*0.994, p2.y*0.994, p2.z*0.994, 1.0));
+			vec4f n3x = modelviewprojection * (vec4f(p3.x*0.994, p3.y*0.994, p3.z*0.994, 1.0));
 
 			n1x = n1x - p1x;
 			n2x = n2x - p2x;
 			n3x = n3x - p3x;
 			
-			vec4d d2x = p2x - p1x;
-			vec4d d3x = p3x - p1x;
+			vec4f d2x = p2x - p1x;
+			vec4f d3x = p3x - p1x;
 
-			vec4d nd2x = n2x-n1x;
-			vec4d nd3x = n3x-n1x;
+			vec4f nd2x = n2x-n1x;
+			vec4f nd3x = n3x-n1x;
 
 			//n1x = (n1x + n2x + n3x)*(1.0 / 3.0);
 			
@@ -213,7 +213,7 @@ struct World
 				{
 					vec3d v = p[i % 3].norm(); 
 					if (i >= 3) v = v*0.994;
-					vec4d cs = modelviewprojection * vec4d(v.x, v.y, v.z, 1); // clipspace
+					vec4f cs = modelviewprojection * vec4f(v.x, v.y, v.z, 1); // clipspace
 					if (cs.z< cs.w) zp++;
 					if (cs.x<-cs.w) xm++;	if (cs.x>cs.w) xp++;
 					if (cs.y<-cs.w) ym++;	if (cs.y>cs.w) yp++;
@@ -318,31 +318,31 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 	}
 	if (!draw) return;
 
-	quaternion q(b.var.vec4d["rotation"]);
+	quaternion q(b.var.vec4["rotation"]);
 	if (gui.mouse.button[0] & b.pressed)				// rotate by left mouse
 	{
 		quaternion qx, qy;
 		qx.set_rotate_y((double)gui.mouse.dx / 100);
 		qy.set_rotate_x(-(double)gui.mouse.dy / 100);
 		q = qy*qx*q;
-		b.var.vec4d["rotation"] = vec4d(q.x, q.y, q.z, q.w);
+		b.var.vec4["rotation"] = vec4f(q.x, q.y, q.z, q.w);
 	}
 
 	// center of detail
 
 	double z = b.var.number["zoom"];
-	vec4d pos = b.var.vec4d["position"];
+	vec4f pos = b.var.vec4["position"];
 	//q.invert();
-	vec3d center = vec3d(-pos.x, -pos.y, -pos.z).norm();// matrix44(q).z_component().norm();
+	vec3f center = vec3f(-pos.x, -pos.y, -pos.z).norm();// matrix44(q).z_component().norm();
 	///q.invert();
 
 	static uint t0 = timeGetTime(), t1 = 0; static double dt;
 	t1 = t0; t0 = timeGetTime(); dt = dt*0.9+0.1*(t0 - t1);
 
 	quaternion qi = q; qi.invert();
-	vec3d dir_z = matrix44d(qi).z_component().norm();
-	vec3d dir_x = matrix44d(qi).x_component().norm();
-	vec3d dir_y = matrix44d(qi).y_component().norm();
+	vec3f dir_z = matrix44(qi).z_component().norm();
+	vec3f dir_x = matrix44(qi).x_component().norm();
+	vec3f dir_y = matrix44(qi).y_component().norm();
 	double speed = b.var.number["speed"];// (0.0000002 + max(0, pos.len() - 1.0)) * 0.02*(dt / 100);
 
 	if (b.hover)										// zoom by wheel
@@ -362,19 +362,19 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 	km = (vec3d(pos.x, pos.y, pos.z).length() - 0.994) * planetradius * 1000;
 	w.label["Speed"].text = str("Speed : %lg km/h ( alt %lgm )", kmh, km);
 
-	if (gui.keyb.key['w']){ pos = pos + vec4d(dir_z.x, dir_z.y, dir_z.z, 0)*speed; }
-	if (gui.keyb.key['s']){ pos = pos - vec4d(dir_z.x, dir_z.y, dir_z.z, 0)*speed; }
-	if (gui.keyb.key['a']){ pos = pos + vec4d(dir_x.x, dir_x.y, dir_x.z, 0)*speed; }
-	if (gui.keyb.key['d']){ pos = pos - vec4d(dir_x.x, dir_x.y, dir_x.z, 0)*speed; }
-	if (gui.keyb.key['q']){ pos = pos - vec4d(dir_y.x, dir_y.y, dir_y.z, 0)*speed; }
-	if (gui.keyb.key['e']){ pos = pos + vec4d(dir_y.x, dir_y.y, dir_y.z, 0)*speed; }
+	if (gui.keyb.key['w']){ pos = pos + vec4f(dir_z.x, dir_z.y, dir_z.z, 0)*speed; }
+	if (gui.keyb.key['s']){ pos = pos - vec4f(dir_z.x, dir_z.y, dir_z.z, 0)*speed; }
+	if (gui.keyb.key['a']){ pos = pos + vec4f(dir_x.x, dir_x.y, dir_x.z, 0)*speed; }
+	if (gui.keyb.key['d']){ pos = pos - vec4f(dir_x.x, dir_x.y, dir_x.z, 0)*speed; }
+	if (gui.keyb.key['q']){ pos = pos - vec4f(dir_y.x, dir_y.y, dir_y.z, 0)*speed; }
+	if (gui.keyb.key['e']){ pos = pos + vec4f(dir_y.x, dir_y.y, dir_y.z, 0)*speed; }
 
 	if (gui.mouse.button[1] && (b.pressed || b.hover))	// move by middle button
 	{
-		pos = pos + vec4d(dir_x.x, dir_x.y, dir_x.z, 0)*speed*gui.mouse.dx*5.0;
-		pos = pos + vec4d(dir_y.x, dir_y.y, dir_y.z, 0)*speed*gui.mouse.dy*5.0;
+		pos = pos + vec4f(dir_x.x, dir_x.y, dir_x.z, 0)*speed*gui.mouse.dx*5.0;
+		pos = pos + vec4f(dir_y.x, dir_y.y, dir_y.z, 0)*speed*gui.mouse.dy*5.0;
 	}
-	b.var.vec4d["position"] = pos;
+	b.var.vec4["position"] = pos;
 
 	w.label["Position"].text = str("Position xyz: %lg km %lg km %lg km", pos.x* planetradius, pos.y* planetradius, pos.z* planetradius);
 
@@ -395,7 +395,7 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 		glGetFloatv(GL_PROJECTION_MATRIX, &mat_pr_f.m[0][0]);		//ogl_check_error();
 		glGetFloatv(GL_MODELVIEW_MATRIX, &mat_mv_f.m[0][0]);		//ogl_check_error();
 		//mat = mat_mv*mat_pr;
-		matrix44d mat, mat_pr,mat_mv(q);
+		matrix44 mat, mat_pr,mat_mv(q);
 		mat_mv.ident();
 		mat_mv.m[3][0] =  pos.x;
 		mat_mv.m[3][1] =  pos.y;
@@ -403,7 +403,7 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 
 		loopi(0, 4)loopj(0, 4)  mat_pr.m[i][j] = mat_pr_f.m[i][j];
 		//mat_mv.transpose();
-		mat = mat_mv*matrix44d(q)*mat_pr;
+		mat = mat_mv * matrix44(q) * mat_pr;
 		loopi(0, 4)loopj(0, 4) modelviewprojection.m[i][j] = mat.m[i][j];
 	}
 	glColor4f(0, 0, 0, 1);
@@ -455,8 +455,8 @@ void init_gui()
 	w.button["canvas"]=Gui::Button("",20,250);
 	w.button["canvas"].skin=Skin("");
 	w.button["canvas"].var.number["speed"] = 0.01;
-	w.button["canvas"].var.vec4d["position"] = vec4d(0, 0, 2.5, 0); // vec4
-	w.button["canvas"].var.vec4d["rotation"]=vec4d(1,0,0,0); // quaternion
+	w.button["canvas"].var.vec4["position"] = vec4f(0, 0, 2.5, 0); // vec4
+	w.button["canvas"].var.vec4["rotation"] = vec4f(1,0,0,0); // quaternion
 	w.button["canvas"].var.number["zoom"]=80; // fov
 	w.button["canvas"].var.ptr["fbo"]=0;
 	w.button["canvas"].callback_all=render_callback;

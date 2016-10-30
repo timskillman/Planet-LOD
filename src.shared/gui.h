@@ -209,7 +209,7 @@ class Gui
 		std::map<String, matrix44>		mat4;
 		std::map<String, matrix44>		mat4d;
 		std::map<String, vec4f>			vec4;
-		std::map<String, vec4d>			vec4d;
+		//std::map<String, vec4d>			vec4d;
 		std::map<String, double>		number;
 		std::map<String,String>			string;
 		std::map<String,Skin>			skin;

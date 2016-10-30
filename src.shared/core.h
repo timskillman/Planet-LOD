@@ -43,8 +43,8 @@
 #define uint unsigned int
 #define uchar unsigned char
 /*------------------------------------------------------*/
-#include "mathlib/vector.h"
-#include "mathlib/matrix.h"
+#include <mathlib/vector.h>
+#include <mathlib/matrix.h>
 /*------------------------------------------------------*/
 #define loop0i(end_l) for ( int i=0;i<end_l;++i )
 #define loop0j(end_l) for ( int j=0;j<end_l;++j )

@@ -12,9 +12,9 @@
 // Mathlib included from 
 // http://sourceforge.net/projects/nebuladevice/
 ////////////////////////////////////////////////////////////////////////////////
-#include "gui.h"
+#include "../src.shared/gui.h"
 ////////////////////////////////////////////////////////////////////////////////
-matrix44d modelviewprojection;
+matrix44 modelviewprojection;
 ////////////////////////////////////////////////////////////////////////////////
 struct World
 {
@@ -128,20 +128,20 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 		b.skin.tex_normal = b.skin.tex_hover = b.skin.tex_selected = fbo.color_tex;
 	}
 
-	quaternion q(b.var.vec4d["rotation"]);
+	quaternion q(b.var.vec4["rotation"]);
 	if (gui.mouse.button[0] & b.pressed)				// rotate by left mouse
 	{
 		quaternion qx, qy;
 		qx.set_rotate_y((double)gui.mouse.dx / 100);
 		qy.set_rotate_x(-(double)gui.mouse.dy / 100);
 		q = qy*qx*q;
-		b.var.vec4d["rotation"] = vec4d(q.x, q.y, q.z, q.w);
+		b.var.vec4["rotation"] = vec4f(q.x, q.y, q.z, q.w);
 	}
 
 	// center of detail
 
 	double z = b.var.number["zoom"];
-	vec4d pos = b.var.vec4d["position"];
+	vec4f pos = b.var.vec4["position"];
 
 	vec3d center = vec3d(-pos.x, -pos.y, -pos.z).norm();
 
@@ -149,9 +149,9 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 	t1 = t0; t0 = timeGetTime(); dt = dt*0.9+0.1*(t0 - t1);
 
 	quaternion qi = q; qi.invert();
-	vec3d dir_z = matrix44d(qi).z_component().norm();
-	vec3d dir_x = matrix44d(qi).x_component().norm();
-	vec3d dir_y = matrix44d(qi).y_component().norm();
+	vec3f dir_z = matrix44(qi).z_component().norm();
+	vec3f dir_x = matrix44(qi).x_component().norm();
+	vec3f dir_y = matrix44(qi).y_component().norm();
 	double speed = b.var.number["speed"];
 
 	if (b.hover)										// zoom by wheel
@@ -170,19 +170,19 @@ void render_callback(Gui::Window *window, Gui::Button* control, int index)
 	double kmh = speed * planetradius / (dt / (1000 * 3600));
 	w.label["Speed"].text = str("Speed : %lg km/h ( %lg km total )", kmh,km);
 	
-	if (gui.keyb.key['w']){ pos = pos + vec4d(dir_z.x, dir_z.y, dir_z.z, 0)*speed; km += speed * planetradius; }
-	if (gui.keyb.key['s']){ pos = pos - vec4d(dir_z.x, dir_z.y, dir_z.z, 0)*speed; km += speed * planetradius; }
-	if (gui.keyb.key['a']){ pos = pos + vec4d(dir_x.x, dir_x.y, dir_x.z, 0)*speed; km += speed * planetradius; }
-	if (gui.keyb.key['d']){ pos = pos - vec4d(dir_x.x, dir_x.y, dir_x.z, 0)*speed; km += speed * planetradius; }
-	if (gui.keyb.key['q']){ pos = pos - vec4d(dir_y.x, dir_y.y, dir_y.z, 0)*speed; km += speed * planetradius; }
-	if (gui.keyb.key['e']){ pos = pos + vec4d(dir_y.x, dir_y.y, dir_y.z, 0)*speed; km += speed * planetradius; }
+	if (gui.keyb.key['w']){ pos = pos + vec4f(dir_z.x, dir_z.y, dir_z.z, 0)*speed; km += speed * planetradius; }
+	if (gui.keyb.key['s']){ pos = pos - vec4f(dir_z.x, dir_z.y, dir_z.z, 0)*speed; km += speed * planetradius; }
+	if (gui.keyb.key['a']){ pos = pos + vec4f(dir_x.x, dir_x.y, dir_x.z, 0)*speed; km += speed * planetradius; }
+	if (gui.keyb.key['d']){ pos = pos - vec4f(dir_x.x, dir_x.y, dir_x.z, 0)*speed; km += speed * planetradius; }
+	if (gui.keyb.key['q']){ pos = pos - vec4f(dir_y.x, dir_y.y, dir_y.z, 0)*speed; km += speed * planetradius; }
+	if (gui.keyb.key['e']){ pos = pos + vec4f(dir_y.x, dir_y.y, dir_y.z, 0)*speed; km += speed * planetradius; }
 
 	if (gui.mouse.button[1] && (b.pressed || b.hover))	// move by middle button
 	{
-		pos = pos + vec4d(dir_x.x, dir_x.y, dir_x.z, 0)*speed*gui.mouse.dx*5.0;
-		pos = pos + vec4d(dir_y.x, dir_y.y, dir_y.z, 0)*speed*gui.mouse.dy*5.0;
+		pos = pos + vec4f(dir_x.x, dir_x.y, dir_x.z, 0)*speed*gui.mouse.dx*5.0;
+		pos = pos + vec4f(dir_y.x, dir_y.y, dir_y.z, 0)*speed*gui.mouse.dy*5.0;
 	}
-	b.var.vec4d["position"] = pos;
+	b.var.vec4["position"] = pos;
 
 	w.label["Position"].text = str("Position xyz: %lg km %lg km %lg km", pos.x* planetradius, pos.y* planetradius, pos.z* planetradius);
 
@@ -246,8 +246,8 @@ void init_gui()
 	w.button["canvas"]=Gui::Button("",20,250);
 	w.button["canvas"].skin=Skin("");
 	w.button["canvas"].var.number["speed"] = 0.01;
-	w.button["canvas"].var.vec4d["position"] = vec4d(0, 0, 2.5, 0); // vec4
-	w.button["canvas"].var.vec4d["rotation"]=vec4d(1,0,0,0); // quaternion
+	w.button["canvas"].var.vec4["position"] = vec4f(0, 0, 2.5, 0); // vec4
+	w.button["canvas"].var.vec4["rotation"] = vec4f(1,0,0,0); // quaternion
 	w.button["canvas"].var.number["zoom"]=80; // fov
 	w.button["canvas"].var.ptr["fbo"]=0;
 	w.button["canvas"].callback_all=render_callback;

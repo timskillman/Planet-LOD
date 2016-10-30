@@ -1,7 +1,7 @@
 #ifdef _DEBUG
-#pragma comment(lib,"freetype26d.lib")
+#pragma comment(lib,"freetype27d.lib")
 #else
-#pragma comment(lib,"freetype.lib")
+#pragma comment(lib,"freetype27.lib")
 #endif
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"opengl32.lib")

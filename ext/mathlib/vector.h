@@ -14,11 +14,11 @@
 #define vec4f vector4
 #ifndef __USE_SSE__
 // generic vector classes
-#include "mathlib/_vector2.h"
-#include "mathlib/_vector2d.h"
-#include "mathlib/_vector3.h"
-#include "mathlib/_vector3d.h"
-#include "mathlib/_vector4.h"
+#include "_vector2.h"
+#include "_vector2d.h"
+#include "_vector3.h"
+#include "_vector3d.h"
+#include "_vector4.h"
 typedef _vector2 vector2;
 typedef _vector2d vector2d;
 typedef _vector3 vector3;
@@ -26,9 +26,9 @@ typedef _vector3d vector3d;
 typedef _vector4 vector4;
 #else
 // sse vector classes
-#include "mathlib/_vector2.h"
-#include "mathlib/_vector3_sse.h"
-#include "mathlib/_vector4_sse.h"
+#include "_vector2.h"
+#include "_vector3_sse.h"
+#include "_vector4_sse.h"
 typedef _vector2 vector2; 
 typedef _vector3_sse vector3;
 typedef _vector4_sse vector4;

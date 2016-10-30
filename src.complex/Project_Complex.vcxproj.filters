@@ -51,35 +51,35 @@
     <ClInclude Include="..\ext\drawtext\drawtext_impl.h">
       <Filter>ext\drawtext</Filter>
     </ClInclude>
-    <ClInclude Include="gui.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="Bmp.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="core.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="error.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="fbo.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="glsl.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="libs.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\ext\stackwalker\error.h">
       <Filter>ext\StackWalker</Filter>
     </ClInclude>
     <ClInclude Include="..\ext\stackwalker\StackWalker.h">
       <Filter>ext\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\Bmp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\core.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\error.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\fbo.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\glsl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\gui.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\libs.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src.shared\ogl.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -95,12 +95,6 @@
     <ClCompile Include="..\ext\drawtext\unicode\unicode.cpp">
       <Filter>ext\drawtext</Filter>
     </ClCompile>
-    <ClCompile Include="core.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Bmp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\ext\stackwalker\StackWalker.cpp">
       <Filter>ext\StackWalker</Filter>
     </ClCompile>
@@ -109,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="..\ext\drawtext\utf8.c">
       <Filter>ext\drawtext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src.shared\Bmp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src.shared\core.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

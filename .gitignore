@@ -1,0 +1,9 @@
+# Ignored directories
+.vs/
+src.*/Debug/
+src.*/Release/
+
+# Ignored file types
+*.db
+*.opendb
+*.exe
