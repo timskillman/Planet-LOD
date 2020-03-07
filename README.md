@@ -1,3 +1,5 @@
+Note: Thanks Xoarinn for getting this working in later Visual Studios!  The only fork that worked ;-)
+
 ### Planet-LOD - Spherical Level-of-Detail
 
 #### License : MIT
